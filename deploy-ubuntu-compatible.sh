@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ServiceHub Deployment Script for Ubuntu EC2
+# ServiceHub Deployment Script for Ubuntu EC2 (Version Compatible)
 # Run this script on your Ubuntu EC2 instance via Session Manager
 
 set -e
