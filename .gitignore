@@ -1,0 +1,47 @@
+# Sensitive files
+Files/assets/admin/push_config.json
+Files/install/database.sql
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+
+# Logs
+*.log
+logs/
+
+# Cache
+cache/
+storage/cache/
+
+# Temporary files
+temp/
+tmp/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules
+node_modules/
+
+# Vendor files
+vendor/
+
+# Composer files
+composer.lock
+
+# Laravel specific
+bootstrap/cache/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+storage/logs/
