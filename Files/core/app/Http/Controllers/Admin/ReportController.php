@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\NotificationLog;
+use App\Models\Order;
+use App\Models\Transaction;
+use App\Models\UserLogin;
+use Illuminate\Http\Request;
+
+class ReportController extends Controller {
+    public function transaction(Request $request, $userId = null) {
+        $pageTitle = 'Transaction Logs';
+
+        $remarks = Transaction::distinct('remark')->orderBy('remark')->get('remark');
+
+        $transactions = Transaction::searchable(['trx', 'user:username', 'provider:username'])->filter(['trx_type', 'remark'])->dateFilter()->orderBy('id', 'desc')->with(['user', 'provider']);
+
+        if ($userId) {
+            $transactions = $transactions->where('user_id', $userId);
+        }
+        $transactions = $transactions->paginate(getPaginate());
+
+        return view('admin.reports.transactions', compact('pageTitle', 'transactions', 'remarks'));
+    }
+
+    public function loginHistory(Request $request) {
+        $pageTitle = 'User Login History';
+        $loginLogs = UserLogin::orderBy('id', 'desc')->searchable(['user:username', 'provider:username'])->dateFilter()->with(['user', 'provider'])->paginate(getPaginate());
+        return view('admin.reports.logins', compact('pageTitle', 'loginLogs'));
+    }
+
+    public function loginIpHistory($ip) {
+        $pageTitle = 'Login by - ' . $ip;
+        $loginLogs = UserLogin::where('user_ip', $ip)->orderBy('id', 'desc')->with('user')->paginate(getPaginate());
+        return view('admin.reports.logins', compact('pageTitle', 'loginLogs', 'ip'));
+    }
+
+    public function notificationHistory(Request $request) {
+        $pageTitle = 'Notification History';
+        $logs      = NotificationLog::orderBy('id', 'desc')->searchable(['user:username', 'provider:username'])->dateFilter()->with(['user', 'provider'])->paginate(getPaginate());
+        return view('admin.reports.notification_history', compact('pageTitle', 'logs'));
+    }
+
+    public function emailDetails($id) {
+        $pageTitle = 'Email Details';
+        $email     = NotificationLog::findOrFail($id);
+        return view('admin.reports.email_details', compact('pageTitle', 'email'));
+    }
+
+    public function orders() {
+        $pageTitle = 'Orders History';
+        $orders    = Order::latest('id')->searchable(['order_id', 'total', 'user:username', 'provider:username'])->filter(['payment_type', 'status'])->dateFilter()->paginate(getPaginate());
+        return view('admin.reports.orders', compact('pageTitle', 'orders'));
+    }
+
+    public function orderDetails($id) {
+        $pageTitle = 'Order Details';
+        $order     = Order::where('id', $id)->with('orderDetails')->firstOrFail();
+        return view('admin.reports.order_details', compact('pageTitle', 'order'));
+    }
+
+    public function orderInvoicePrint($id) {
+        $pageTitle = 'Order Invoice Print';
+        $order     = Order::where('id', $id)->firstOrFail();
+        return view('admin.reports.order_invoice_print', compact('pageTitle', 'order'));
+    }
+}
