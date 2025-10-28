@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Database Setup Script for ServiceHub
+# Database Setup Script for ServiceHub on Ubuntu
 # Run this to import the database and set up initial data
 
 set -e
@@ -9,7 +9,7 @@ echo "Setting up ServiceHub database..."
 
 # Check if database exists
 if ! mysql -u root -p'your_strong_password' -e "USE servicehub;" 2>/dev/null; then
-    echo "Database 'servicehub' does not exist. Please run deploy-fixed.sh first."
+    echo "Database 'servicehub' does not exist. Please run deploy-ubuntu.sh first."
     exit 1
 fi
 
@@ -21,11 +21,11 @@ mysql -u servicehub -p'your_strong_password' servicehub < database.sql
 # Run migrations
 echo "Running migrations..."
 cd /var/www/html/Files/core
-sudo -u apache php artisan migrate --force
+sudo -u www-data php artisan migrate --force
 
 # Seed database (if needed)
 echo "Seeding database..."
-sudo -u apache php artisan db:seed --force
+sudo -u www-data php artisan db:seed --force
 
 # Set up admin user (optional)
 echo "Setting up admin user..."

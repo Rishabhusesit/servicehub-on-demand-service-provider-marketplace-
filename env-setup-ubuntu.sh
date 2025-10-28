@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Environment Configuration Script for ServiceHub
+# Environment Configuration Script for ServiceHub on Ubuntu
 # Run this after the main deployment
 
 set -e
@@ -71,24 +71,24 @@ VITE_PUSHER_APP_CLUSTER="\${PUSHER_APP_CLUSTER}"
 EOF
 
 # Set proper permissions
-sudo chown apache:apache /var/www/html/Files/core/.env
+sudo chown www-data:www-data /var/www/html/Files/core/.env
 sudo chmod 600 /var/www/html/Files/core/.env
 
 # Generate application key
 echo "Generating application key..."
 cd /var/www/html/Files/core
-sudo -u apache php artisan key:generate
+sudo -u www-data php artisan key:generate
 
 # Clear caches
 echo "Clearing caches..."
-sudo -u apache php artisan config:clear
-sudo -u apache php artisan cache:clear
-sudo -u apache php artisan route:clear
-sudo -u apache php artisan view:clear
+sudo -u www-data php artisan config:clear
+sudo -u www-data php artisan cache:clear
+sudo -u www-data php artisan route:clear
+sudo -u www-data php artisan view:clear
 
 # Set up storage links
 echo "Setting up storage links..."
-sudo -u apache php artisan storage:link
+sudo -u www-data php artisan storage:link
 
 echo "Environment setup completed!"
 echo "Please update the following in your .env file:"
